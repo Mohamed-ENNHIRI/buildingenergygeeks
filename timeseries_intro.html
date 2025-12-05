@@ -1,0 +1,636 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Time series models &#8212; Building energy probabilistic modelling</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'timeseries_intro';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ARMAX models" href="armax.html" />
+    <link rel="prev" title="Energy signature" href="changepoint.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Building energy probabilistic modelling - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Building energy probabilistic modelling - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="index.html">
+                    Building energy probabilistic modelling
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Background</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="background.html">Motivation for probabilistic modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modelling.html">Simplified building energy modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow.html">A Bayesian data analysis workflow</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simple regression</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="linearregression.html">Linear regression (PyMC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="linearregression_stan.html">Linear regression (Stan)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changepoint.html">Energy signature</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Time series</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Time series models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="armax.html">ARMAX models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autocorrelated.html">Autocorrelated energy signature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hmm.html">Hidden Markov models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rnn_intro.html">Recurrent Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rnn_implementation.html">RNN Implementation for Energy Forecasting</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">State-space models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="statespace_intro.html">Principle of SSMs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statespace_simple.html">A simple RC model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pysip.html">The pySIP library</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Gaussian Processes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="gaussianprocess.html">Introduction to Gaussian Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gp_forecast.html">GP for prediction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gp_timeseries.html">GP as state-space models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/Mohamed-ENNHIRI/buildingenergygeeks" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/Mohamed-ENNHIRI/buildingenergygeeks/issues/new?title=Issue%20on%20page%20%2Ftimeseries_intro.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/timeseries_intro.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Time series models</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">Motivation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Time series models</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#autoregressive-models-ar-arx">Autoregressive models: AR, ARX</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#moving-average-models-ma-arma-armax">Moving average models: MA, ARMA, ARMAX</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prediction-uncertainty">Prediction uncertainty</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="time-series-models">
+<span id="timeseries-intro"></span><h1>Time series models<a class="headerlink" href="#time-series-models" title="Link to this heading">#</a></h1>
+<section id="motivation">
+<h2>Motivation<a class="headerlink" href="#motivation" title="Link to this heading">#</a></h2>
+<p>Ordinary linear regression (OLR) is based on an assumption of temporal independence: each observation of energy use <span class="math notranslate nohighlight">\(y_t\)</span> is only explained by current explanatory variables <span class="math notranslate nohighlight">\(x_t\)</span> (weather, occupancy). Consecutive values <span class="math notranslate nohighlight">\(y_t,y_{t-1}, y_{t-2}, \dots\)</span> are independent given these input conditions.</p>
+<p>After model training, this hypothesis is validated by checking residuals between model output <span class="math notranslate nohighlight">\(\hat{y}_t\)</span> and measurements <span class="math notranslate nohighlight">\(y_t\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-ts-residual">
+<span class="eqno">(25)<a class="headerlink" href="#equation-ts-residual" title="Link to this equation">#</a></span>\[\varepsilon_t= \hat{y}_t-y_t\]</div>
+<p>The series of residuals <span class="math notranslate nohighlight">\((\varepsilon_1 ,\varepsilon_2 ,\dots,\varepsilon_t)\)</span> should exhibit low values of autocorrelation, to confirm that the remaining model error after training has white noise properties. The autocorrelation function (ACF) of residuals showing significant values hints that the model did not fully capture the data-generating process. In such cases, OLR estimates of savings uncertainty will be biased and underestimated unless corrected.</p>
+<p>The <a class="reference internal" href="changepoint.html"><span class="std std-doc">tutorial on change-point models</span></a> ended with an ACF graph looking like this:</p>
+<figure class="align-center" id="timeseriesintro1">
+<a class="reference internal image-reference" href="figures/timeseriesintro1.png"><img alt="figures/timeseriesintro1.png" src="figures/timeseriesintro1.png" style="width: 400px;" /></a>
+<figcaption>
+<p><span class="caption-number">Fig. 19 </span><span class="caption-text">ACF exhibiting some high values</span><a class="headerlink" href="#timeseriesintro1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>In this example, the ACF value is near 0.7 at lag 1: on average, consecutive residuals have a correlation coefficient of 0.7. The lag 2 ACF shows that correlation remains, two observations apart, with an average coefficient over 0.5. The lag 0 ACF is always exactly 1, since each residual is perfectly correlated with itself.</p>
+<p>Autocorrelation occurs with high or medium frequency data. For instance, using daily meter readings, a simple linear regression model may overlook the thermal inertia of the building, which makes the daily consumption dependent on the conditions of the previous day to some extent. With higher frequency data (hourly or subhourly), OLR may not longer be applicable at all.</p>
+</section>
+<section id="id1">
+<h2>Time series models<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>Time-series models address high frequency data by formulating relationships between consecutive measurements, up to a certain order.</p>
+<section id="autoregressive-models-ar-arx">
+<h3>Autoregressive models: AR, ARX<a class="headerlink" href="#autoregressive-models-ar-arx" title="Link to this heading">#</a></h3>
+<p>An Autoregressive model of order <span class="math notranslate nohighlight">\(p\)</span>, denoted <strong>AR(p)</strong>, states that the current energy use <span class="math notranslate nohighlight">\(y_t\)</span> depends on its past values, up to a certain lag <span class="math notranslate nohighlight">\(p\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-ts-ar">
+<span class="eqno">(26)<a class="headerlink" href="#equation-ts-ar" title="Link to this equation">#</a></span>\[y_t = \varphi_1 y_{t-1} + \varphi_2 y_{t-2} + \dots + \varphi_p y_{t-p} + \varepsilon_t\]</div>
+<p>with <span class="math notranslate nohighlight">\(\varepsilon_t \sim N(0, \sigma)\)</span>. The <span class="math notranslate nohighlight">\(\varphi\)</span> coefficients are model parameters, to be learned by fitting the model.</p>
+<p>This model easily extends into the <strong>ARX</strong> formulation: autoregressive with exogenous variables.</p>
+<div class="math notranslate nohighlight" id="equation-ts-arx">
+<span class="eqno">(27)<a class="headerlink" href="#equation-ts-arx" title="Link to this equation">#</a></span>\[y_t = \sum_{i=1}^p \varphi_i y_{t-i} + \sum_{k=0}^r \beta_k x_{t-k} + \varepsilon_t\]</div>
+<p>Where <span class="math notranslate nohighlight">\(x_{t-k}\)</span> are the external factors like weather, occupancy, other heat sources etc. at time <span class="math notranslate nohighlight">\(t - k\)</span>. The maximum order <span class="math notranslate nohighlight">\(r\)</span> to which previous values of exogenous variables are included in the equation may be equal to <span class="math notranslate nohighlight">\(p\)</span>, or different.</p>
+<p>Training an AR or ARX model is straightforward: one simply has to generate a lagged copy of the series <span class="math notranslate nohighlight">\(\{y_t\}\)</span>, and include this copy in the explanatory variables of an OLR model.</p>
+<figure class="align-center" id="timeseriesintro2">
+<a class="reference internal image-reference" href="figures/timeseriesintro2.png"><img alt="figures/timeseriesintro2.png" src="figures/timeseriesintro2.png" style="width: 200px;" /></a>
+</figure>
+<p>In this example, lagged copies of <span class="math notranslate nohighlight">\(y\)</span> are created up to an order <span class="math notranslate nohighlight">\(p=2\)</span>. The new series are model inputs of a linear regression model. Other variables <span class="math notranslate nohighlight">\(x\)</span> may be added, even with lagged copies. However, the first two data points are no longer usable for training as they are missing some explanatory variables.</p>
+<p>This extension of the OLR model is sometimes called the <a class="reference external" href="https://online.stat.psu.edu/stat501/lesson/t/t.2/t.2.3-testing-and-remedial-measures-autocorrelation#paragraph--748">Cochrane-Orcutt procedure</a>. It does not guarantee solving autocorrelation issues: the ACF should still be checked after training.</p>
+</section>
+<section id="moving-average-models-ma-arma-armax">
+<h3>Moving average models: MA, ARMA, ARMAX<a class="headerlink" href="#moving-average-models-ma-arma-armax" title="Link to this heading">#</a></h3>
+<p>A Moving Average model of order <span class="math notranslate nohighlight">\(q\)</span>, <strong>MA(q)</strong>, states that each term of the series <span class="math notranslate nohighlight">\(y_t\)</span> depends on previous values of the error <span class="math notranslate nohighlight">\(\varepsilon_t= \hat{y}_t-y_t\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-ts-ma">
+<span class="eqno">(28)<a class="headerlink" href="#equation-ts-ma" title="Link to this equation">#</a></span>\[y_t = \sum_{j=1}^q \theta_j \varepsilon_{t-j} + \varepsilon_t\]</div>
+<p>The combination of autoregressive and moving average terms yields the <strong>ARMA(p,q)</strong> model:</p>
+<div class="math notranslate nohighlight" id="equation-ts-arma">
+<span class="eqno">(29)<a class="headerlink" href="#equation-ts-arma" title="Link to this equation">#</a></span>\[y_t = \sum_{i=1}^p \varphi_i y_{t-i} + \sum_{j=1}^q \theta_j \varepsilon_{t-j} + \varepsilon_t\]</div>
+<p>Or the <strong>ARMAX(p,q)</strong> model, if exogenous variables are to be included as well:</p>
+<div class="math notranslate nohighlight" id="equation-ts-armax">
+<span class="eqno">(30)<a class="headerlink" href="#equation-ts-armax" title="Link to this equation">#</a></span>\[y_t = \sum_{i=1}^p \varphi_i y_{t-i} + \sum_{j=1}^q \theta_j \varepsilon_{t-j} + \sum_{k=0}^r \beta_k x_{t-k} + \varepsilon_t\]</div>
+<p>Unlike an ARX model, any time-series model including a MA component may not be trained as simply as an OLR model, because residuals must be calculated iteratively. Implementations of these models are available in most programming languages.</p>
+<p>In a given situation, the choice between an ARX or ARMAX model is not trivial. In practice, one should start with the lowest order, and train models of increasing orders p and q until the ACF criterion is satisfied. In case high autocorrelations have been identified at higher lag values (for instance, with daily data, a lag-7 autocorrelation suggests a weekly pattern not captured by the model), these orders may be included even if lower orders are not.</p>
+</section>
+</section>
+<section id="prediction-uncertainty">
+<h2>Prediction uncertainty<a class="headerlink" href="#prediction-uncertainty" title="Link to this heading">#</a></h2>
+<p>Let us suppose that a time series model is trained on a finite dataset <span class="math notranslate nohighlight">\(\{y_t, t\in 1 \dots T\}\)</span>, and we now wish to forecast values <span class="math notranslate nohighlight">\(\hat{y}_{T+h}\)</span> up to a certain prediction horizon <span class="math notranslate nohighlight">\(h\)</span>. This is referred to as multi-step ahead prediction. This is required for instance in a M&amp;V workflow, to predict energy use during the reporting period.</p>
+<p>The models presented here predict <span class="math notranslate nohighlight">\(\hat{y}_t\)</span> from previous measurements <span class="math notranslate nohighlight">\(y_{t-i}\)</span> which are no longer available. A multi-step ahead forecast is:</p>
+<div class="math notranslate nohighlight" id="equation-ts-armax-predict">
+<span class="eqno">(31)<a class="headerlink" href="#equation-ts-armax-predict" title="Link to this equation">#</a></span>\[p(y_{T+h} | y_{1:T}) = N(\hat{y}_{T+h}, \sigma_h)\]</div>
+<p>where the training dataset stops at the time index <span class="math notranslate nohighlight">\(T\)</span>, and <span class="math notranslate nohighlight">\(h\)</span> is the number of steps into the test dataset where the mean <span class="math notranslate nohighlight">\(\hat{y}_{t+h}\)</span> and uncertainty <span class="math notranslate nohighlight">\(\sigma_h\)</span> of the prediction are calculated.</p>
+<p>The <strong>prediction mean</strong> <span class="math notranslate nohighlight">\(\hat{y}_{T+h}\)</span> is obtained from Eq. <a class="reference internal" href="#equation-ts-armax">(30)</a> (or any of the previous models). As the prediction horizon <span class="math notranslate nohighlight">\(h\)</span> increases and measurements are no longer available, the observed terms <span class="math notranslate nohighlight">\(y_{T+h-i}\)</span> are gradually replaced by previous forecast means <span class="math notranslate nohighlight">\(\hat{y}\)</span>, and the error terms <span class="math notranslate nohighlight">\(\varepsilon_{T+h-i}\)</span> are set to zero.</p>
+<p>However, in order to account for the <strong>forecasting uncertainty</strong>, increasing with the horizon <span class="math notranslate nohighlight">\(h\)</span>, multiple step ahead predictions of ARMA models have an increased variance:</p>
+<div class="math notranslate nohighlight" id="equation-ts-armax-predict2">
+<span class="eqno">(32)<a class="headerlink" href="#equation-ts-armax-predict2" title="Link to this equation">#</a></span>\[\sigma_h^2 = \sigma^2 \sum_{i=0}^{h-1} \psi_i^2\]</div>
+<p>where <span class="math notranslate nohighlight">\(\psi_i\)</span> are the coefficients of the MA(<span class="math notranslate nohighlight">\(\infty\)</span>) representation of the ARMA(p,q) process <span id="id2">[<a class="reference internal" href="references.html#id22" title="Robert H Shumway, David S Stoffer, and David S Stoffer. Time series analysis and its applications. Volume 3. Springer, 2000.">Shumway <em>et al.</em>, 2000</a>]</span>. Eq. <a class="reference internal" href="#equation-ts-arma">(29)</a> can be formulated as a MA(<span class="math notranslate nohighlight">\(\infty\)</span>) process, with coefficients <span class="math notranslate nohighlight">\(\psi\)</span> as functions of the ARMA coefficients <span class="math notranslate nohighlight">\(\varphi\)</span> and <span class="math notranslate nohighlight">\(\theta\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-ts-armax-predict3">
+<span class="eqno">(33)<a class="headerlink" href="#equation-ts-armax-predict3" title="Link to this equation">#</a></span>\[y_t = \varepsilon_t + \sum_{i=1}^\infty \psi_i \varepsilon_{t-i} \]</div>
+<div class="math notranslate nohighlight" id="equation-ts-armax-predict4">
+<span class="eqno">(34)<a class="headerlink" href="#equation-ts-armax-predict4" title="Link to this equation">#</a></span>\[\psi_i = \sum_{j=1}^p \varphi_j \psi_{i-j} +\theta_i\]</div>
+<p>and <span class="math notranslate nohighlight">\(\psi_0=1\)</span>.</p>
+<p>In the generic case, the <span class="math notranslate nohighlight">\(\psi\)</span> coefficients are calculated iteratively, as one new value is required for each new forecast. In the particular case of MA(q) models, the forecast uncertainty is simple to formulate because each <span class="math notranslate nohighlight">\(\psi_i\)</span> is equal to a <span class="math notranslate nohighlight">\(\theta_i\)</span> coefficient. In the particular case of the ARMA(1,1) model, there is a specific formulation of <span class="math notranslate nohighlight">\(\sigma_h\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-ts-armax-predict5">
+<span class="eqno">(35)<a class="headerlink" href="#equation-ts-armax-predict5" title="Link to this equation">#</a></span>\[\sigma_h^2 = \sigma^2 \left[1 + \frac{\left(\varphi+\theta\right)\left(1-\varphi^{2(h-1)}\right)}{1-\varphi^2}\right]\]</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="changepoint.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Energy signature</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="armax.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">ARMAX models</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">Motivation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Time series models</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#autoregressive-models-ar-arx">Autoregressive models: AR, ARX</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#moving-average-models-ma-arma-armax">Moving average models: MA, ARMA, ARMAX</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prediction-uncertainty">Prediction uncertainty</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Simon Rouchier
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

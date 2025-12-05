@@ -1,0 +1,74 @@
+Traceback (most recent call last):
+  File "C:\Users\Phiniqs\AppData\Local\Programs\Python\Python313\Lib\site-packages\jupyter_cache\executors\utils.py", line 58, in single_nb_execution
+    executenb(
+    ~~~~~~~~~^
+        nb,
+        ^^^
+    ...<4 lines>...
+        **kwargs,
+        ^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Phiniqs\AppData\Local\Programs\Python\Python313\Lib\site-packages\nbclient\client.py", line 1305, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Phiniqs\AppData\Local\Programs\Python\Python313\Lib\site-packages\jupyter_core\utils\__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\Phiniqs\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\Phiniqs\AppData\Local\Programs\Python\Python313\Lib\site-packages\nbclient\client.py", line 705, in async_execute
+    await self.async_execute_cell(
+        cell, index, execution_count=self.code_cells_executed + 1
+    )
+  File "C:\Users\Phiniqs\AppData\Local\Programs\Python\Python313\Lib\site-packages\nbclient\client.py", line 1058, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "C:\Users\Phiniqs\AppData\Local\Programs\Python\Python313\Lib\site-packages\nbclient\client.py", line 914, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+import arviz as az
+from cmdstanpy import CmdStanModel
+
+def load_and_resample_data(file):
+    df = pd.read_csv(file)
+    df.set_index(pd.to_datetime(df["Date"]), inplace = True)
+    df.drop("Date", axis=1, inplace=True)
+
+    df['OAT'] = (df['OAT']-32)/1.8
+    df['dayofweek'] = df.index.dayofweek
+    df['weekend'] = (df['dayofweek'] == 5) | (df['dayofweek'] == 6)
+    df = df.groupby(df.index.date).mean()
+
+    return df
+
+df1 = load_and_resample_data('data/building6pre.csv')
+df2 = load_and_resample_data('data/building6during.csv')
+df3 = load_and_resample_data('data/building6post.csv')
+
+df_train = df1.loc[df1['weekend']==False]
+df_test = df3.loc[df3['weekend']==False]
+
+fig, ax = plt.subplots(figsize=(8, 4))
+ax.scatter(df_train['OAT'], df_train['Building 6 kW'], label='Training data')
+ax.scatter(df_test['OAT'], df_test['Building 6 kW'], label='Forecast data')
+ax.legend()
+------------------
+
+
+[1;31m---------------------------------------------------[0m
+[1;31mModuleNotFoundError[0mTraceback (most recent call last)
+Cell [1;32mIn[1], line 5[0m
+[0;32m      2[0m [38;5;28;01mimport[39;00m[38;5;250m [39m[38;5;21;01mpandas[39;00m[38;5;250m [39m[38;5;28;01mas[39;00m[38;5;250m [39m[38;5;21;01mpd[39;00m
+[0;32m      3[0m [38;5;28;01mimport[39;00m[38;5;250m [39m[38;5;21;01mmatplotlib[39;00m[38;5;21;01m.[39;00m[38;5;21;01mpyplot[39;00m[38;5;250m [39m[38;5;28;01mas[39;00m[38;5;250m [39m[38;5;21;01mplt[39;00m
+[1;32m----> 5[0m [38;5;28;01mimport[39;00m[38;5;250m [39m[38;5;21;01marviz[39;00m[38;5;250m [39m[38;5;28;01mas[39;00m[38;5;250m [39m[38;5;21;01maz[39;00m
+[0;32m      6[0m [38;5;28;01mfrom[39;00m[38;5;250m [39m[38;5;21;01mcmdstanpy[39;00m[38;5;250m [39m[38;5;28;01mimport[39;00m CmdStanModel
+[0;32m      8[0m [38;5;28;01mdef[39;00m[38;5;250m [39m[38;5;21mload_and_resample_data[39m(file):
+
+[1;31mModuleNotFoundError[0m: No module named 'arviz'
+

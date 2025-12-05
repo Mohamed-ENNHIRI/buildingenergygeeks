@@ -1,0 +1,1144 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>ARMAX models &#8212; Building energy probabilistic modelling</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'armax';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Autocorrelated energy signature" href="autocorrelated.html" />
+    <link rel="prev" title="Time series models" href="timeseries_intro.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Building energy probabilistic modelling - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Building energy probabilistic modelling - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="index.html">
+                    Building energy probabilistic modelling
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Background</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="background.html">Motivation for probabilistic modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modelling.html">Simplified building energy modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow.html">A Bayesian data analysis workflow</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simple regression</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="linearregression.html">Linear regression (PyMC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="linearregression_stan.html">Linear regression (Stan)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changepoint.html">Energy signature</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Time series</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="timeseries_intro.html">Time series models</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">ARMAX models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autocorrelated.html">Autocorrelated energy signature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hmm.html">Hidden Markov models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rnn_intro.html">Recurrent Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rnn_implementation.html">RNN Implementation for Energy Forecasting</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">State-space models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="statespace_intro.html">Principle of SSMs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statespace_simple.html">A simple RC model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pysip.html">The pySIP library</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Gaussian Processes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="gaussianprocess.html">Introduction to Gaussian Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gp_forecast.html">GP for prediction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gp_timeseries.html">GP as state-space models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/Mohamed-ENNHIRI/buildingenergygeeks" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/Mohamed-ENNHIRI/buildingenergygeeks/issues/new?title=Issue%20on%20page%20%2Farmax.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/armax.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>ARMAX models</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-regression">Linear regression</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#posterior-analysis">Posterior analysis</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="armax-models">
+<h1>ARMAX models<a class="headerlink" href="#armax-models" title="Link to this heading">#</a></h1>
+<p>This tutorial demonstrates ARX and ARMAX models described in <a class="reference internal" href="timeseries_intro.html#timeseries-intro"><span class="std std-ref">the previous page</span></a>.</p>
+<p>We want to see if the preditions of an ordinary linear regression model are improved by expanding it with an AR(p) model. This is what we call the ARX(p) formulation:</p>
+<div class="math notranslate nohighlight" id="equation-armax-01">
+<span class="eqno">(36)<a class="headerlink" href="#equation-armax-01" title="Link to this equation">#</a></span>\[y_t = \sum_{i=1}^p \varphi_i y_{t-i} + \sum_{k=0}^r \beta_k x_{t-k} + \varepsilon_t\]</div>
+<p><a class="reference internal" href="timeseries_intro.html"><span class="std std-doc">Autoregressive models</span></a> (AR) are based on the idea that the current value of the series, <span class="math notranslate nohighlight">\(y_t\)</span>, can be explained as a function of <span class="math notranslate nohighlight">\(p\)</span> past values, <span class="math notranslate nohighlight">\(y_{t−1}\)</span>, <span class="math notranslate nohighlight">\(y_{t−2}\)</span>, …, <span class="math notranslate nohighlight">\(y_{t−p}\)</span>. They are essentially linear regression models which take <em>lagged</em> copies of the dependent variable as explanatory variables. Other variables can be added, leading to the so-called ARX model (AR model with eXplanatory variables).</p>
+<p>This example has one explanatory variable <span class="math notranslate nohighlight">\(x\)</span> which lagged values may also be used up to a certain lag <span class="math notranslate nohighlight">\(r\)</span>. Further expanding this model with a MA(q) term yields the ARMAX(p,q) fomulation:</p>
+<div class="math notranslate nohighlight" id="equation-armax-02">
+<span class="eqno">(37)<a class="headerlink" href="#equation-armax-02" title="Link to this equation">#</a></span>\[y_t = \sum_{i=1}^p \varphi_i y_{t-i} + \sum_{j=1}^q \theta_j \varepsilon_{t-j} + \sum_{k=0}^r \beta_k x_{t-k} + \varepsilon_t\]</div>
+<p>The target of this exercise is to find whether the ARMAX expansion improves the prediction metrics of an ordinary linear model.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">arviz</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">az</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cmdstanpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">CmdStanModel</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------</span>
+<span class="ne">ModuleNotFoundError</span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">5</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="ne">----&gt; </span><span class="mi">5</span> <span class="kn">import</span><span class="w"> </span><span class="nn">arviz</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">az</span>
+<span class="g g-Whitespace">      </span><span class="mi">6</span> <span class="kn">from</span><span class="w"> </span><span class="nn">cmdstanpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">CmdStanModel</span>
+
+<span class="ne">ModuleNotFoundError</span>: No module named &#39;arviz&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<section id="data">
+<h2>Data<a class="headerlink" href="#data" title="Link to this heading">#</a></h2>
+<p>The data comprises the heating power, indoor and outdoor air temperatures of a single-family house, with a 2 hour time step between measurements. The data file can be downloaded <a class="reference external" href="https://github.com/srouchier/buildingenergygeeks/blob/master/data/armaxdata.csv">here</a>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/armaxdata.csv&#39;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>datetime</th>
+      <th>Ti</th>
+      <th>Te</th>
+      <th>P</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2023-04-07 20:00:00</td>
+      <td>21.017708</td>
+      <td>8.008333</td>
+      <td>1127.547691</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2023-04-07 22:00:00</td>
+      <td>21.022083</td>
+      <td>6.254167</td>
+      <td>1095.384059</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2023-04-08 00:00:00</td>
+      <td>21.023750</td>
+      <td>5.258333</td>
+      <td>1073.813890</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2023-04-08 02:00:00</td>
+      <td>21.010625</td>
+      <td>3.381250</td>
+      <td>1101.343786</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2023-04-08 04:00:00</td>
+      <td>21.009167</td>
+      <td>3.118750</td>
+      <td>1131.881637</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># A plot of the dependent variable vs. each of the explanatory variables</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">]),</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;P&#39;</span><span class="p">])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Ti&#39;</span><span class="p">]</span><span class="o">-</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Te&#39;</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;P&#39;</span><span class="p">])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Heating power (W)&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Time&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Ti-Te (C)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0, &#39;Ti-Te (C)&#39;)
+</pre></div>
+</div>
+<img alt="_images/6cfe293948468c104f5ee7bcae960abf92ee0b28ded9b17fa4b0c01c6dd83559.png" src="_images/6cfe293948468c104f5ee7bcae960abf92ee0b28ded9b17fa4b0c01c6dd83559.png" />
+</div>
+</div>
+<p>We may expect a linear relationship between the heating power <span class="math notranslate nohighlight">\(y\)</span> and the indoor-outdoor temperature difference <span class="math notranslate nohighlight">\(x=T_i-T_e\)</span>. However, because of the building’s thermal inertia exceeding the time step size, it is likely that each current value <span class="math notranslate nohighlight">\(y_t\)</span> depends on previous instances <span class="math notranslate nohighlight">\(y_{t-1}\)</span> and <span class="math notranslate nohighlight">\(x_{t-1}\)</span>.</p>
+<p>Let us use about two thirds of the dataset for model training, and the last third to watch the energy use forecasted by fitted models:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">N_train</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="o">*</span><span class="n">N</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Ti&#39;</span><span class="p">]</span><span class="o">-</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Te&#39;</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:</span><span class="n">N_train</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="linear-regression">
+<h2>Linear regression<a class="headerlink" href="#linear-regression" title="Link to this heading">#</a></h2>
+<p>We have Stan models of an ordinary linear regression model, and of ARX and ARMAX model of any orders (p,q,r). All model files can be downloaded from <a class="reference external" href="https://github.com/srouchier/buildingenergygeeks/tree/master/models">this folder</a>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">linreg</span> <span class="o">=</span> <span class="n">CmdStanModel</span><span class="p">(</span><span class="n">stan_file</span><span class="o">=</span><span class="s1">&#39;models/linearregression.stan&#39;</span><span class="p">)</span>
+<span class="n">arx</span> <span class="o">=</span> <span class="n">CmdStanModel</span><span class="p">(</span><span class="n">stan_file</span><span class="o">=</span><span class="s1">&#39;models/arx.stan&#39;</span><span class="p">)</span>
+<span class="n">armax</span> <span class="o">=</span> <span class="n">CmdStanModel</span><span class="p">(</span><span class="n">stan_file</span><span class="o">=</span><span class="s1">&#39;models/armax.stan&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let us start by fitting an ordinary linear regression model which we will use later for model comparison reference:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Data declaration for the linear regression model</span>
+<span class="n">linreg_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;N&quot;</span><span class="p">:</span> <span class="n">N_train</span><span class="p">,</span>
+    <span class="s2">&quot;K&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">X</span><span class="o">.</span><span class="n">values</span><span class="p">[:</span><span class="n">N_train</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span>
+    <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">y</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1"># Fitting the LR model</span>
+<span class="n">fit_linreg</span> <span class="o">=</span> <span class="n">linreg</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">linreg_data</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>06:20:45 - cmdstanpy - INFO - CmdStan start processing
+06:20:45 - cmdstanpy - INFO - Chain [1] start processing
+06:20:45 - cmdstanpy - INFO - Chain [2] start processing
+06:20:45 - cmdstanpy - INFO - Chain [3] start processing
+06:20:45 - cmdstanpy - INFO - Chain [4] start processing
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>06:20:46 - cmdstanpy - INFO - Chain [1] done processing
+06:20:46 - cmdstanpy - INFO - Chain [4] done processing
+06:20:46 - cmdstanpy - INFO - Chain [2] done processing
+06:20:46 - cmdstanpy - INFO - Chain [3] done processing
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now, the choice of ARMAX orders (p,q,r) is not trivial. There is no universal rule telling us how many previous time steps will make the energy forecasts more robust. The general recommendation is to fit several models of increasing complexity, until out model comparison metrics tell us to stop. Let us fit a few models, which is fast once the initial model has been compiled.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">arx1_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;N_train&quot;</span><span class="p">:</span> <span class="n">N_train</span><span class="p">,</span>
+    <span class="s2">&quot;N&quot;</span><span class="p">:</span> <span class="n">N</span><span class="p">,</span>
+    <span class="s2">&quot;K&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;P&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;R&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">X</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="p">,</span>
+    <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">y</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">fit_arx1</span> <span class="o">=</span> <span class="n">arx</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">arx1_data</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">arx2_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;N_train&quot;</span><span class="p">:</span> <span class="n">N_train</span><span class="p">,</span>
+    <span class="s2">&quot;N&quot;</span><span class="p">:</span> <span class="n">N</span><span class="p">,</span>
+    <span class="s2">&quot;K&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;P&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s2">&quot;R&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">X</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="p">,</span>
+    <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">y</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">fit_arx2</span> <span class="o">=</span> <span class="n">arx</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">arx2_data</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">arx3_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;N_train&quot;</span><span class="p">:</span> <span class="n">N_train</span><span class="p">,</span>
+    <span class="s2">&quot;N&quot;</span><span class="p">:</span> <span class="n">N</span><span class="p">,</span>
+    <span class="s2">&quot;K&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;P&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s2">&quot;R&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">X</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="p">,</span>
+    <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">y</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">fit_arx3</span> <span class="o">=</span> <span class="n">arx</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">arx3_data</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>06:20:47 - cmdstanpy - INFO - CmdStan start processing
+06:20:47 - cmdstanpy - INFO - Chain [1] start processing
+06:20:47 - cmdstanpy - INFO - Chain [2] start processing
+06:20:47 - cmdstanpy - INFO - Chain [3] start processing
+06:20:47 - cmdstanpy - INFO - Chain [4] start processing
+06:20:55 - cmdstanpy - INFO - Chain [2] done processing
+06:20:57 - cmdstanpy - INFO - Chain [4] done processing
+06:20:57 - cmdstanpy - INFO - Chain [1] done processing
+06:20:57 - cmdstanpy - INFO - Chain [3] done processing
+06:20:58 - cmdstanpy - INFO - CmdStan start processing
+06:20:58 - cmdstanpy - INFO - Chain [1] start processing
+06:20:58 - cmdstanpy - INFO - Chain [2] start processing
+06:20:58 - cmdstanpy - INFO - Chain [3] start processing
+06:20:58 - cmdstanpy - INFO - Chain [4] start processing
+06:21:22 - cmdstanpy - INFO - Chain [1] done processing
+06:21:24 - cmdstanpy - INFO - Chain [2] done processing
+06:21:25 - cmdstanpy - INFO - Chain [3] done processing
+06:21:28 - cmdstanpy - INFO - Chain [4] done processing
+06:21:28 - cmdstanpy - WARNING - Some chains may have failed to converge.
+	Chain 4 had 1 divergent transitions (0.1%)
+	Use the &quot;diagnose()&quot; method on the CmdStanMCMC object to see further information.
+06:21:28 - cmdstanpy - INFO - CmdStan start processing
+06:21:28 - cmdstanpy - INFO - Chain [1] start processing
+06:21:28 - cmdstanpy - INFO - Chain [2] start processing
+06:21:28 - cmdstanpy - INFO - Chain [3] start processing
+06:21:28 - cmdstanpy - INFO - Chain [4] start processing
+06:21:53 - cmdstanpy - INFO - Chain [1] done processing
+06:21:55 - cmdstanpy - INFO - Chain [4] done processing
+06:21:59 - cmdstanpy - INFO - Chain [2] done processing
+06:21:59 - cmdstanpy - INFO - Chain [3] done processing
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let us add an ARMAX model to the pool:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">armax_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;N_train&quot;</span><span class="p">:</span> <span class="n">N_train</span><span class="p">,</span>
+    <span class="s2">&quot;N&quot;</span><span class="p">:</span> <span class="n">N</span><span class="p">,</span>
+    <span class="s2">&quot;K&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;P&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;Q&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;R&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">X</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="p">,</span>
+    <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">y</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">fit_armax</span> <span class="o">=</span> <span class="n">armax</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">armax_data</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>06:21:59 - cmdstanpy - INFO - CmdStan start processing
+06:21:59 - cmdstanpy - INFO - Chain [1] start processing
+06:21:59 - cmdstanpy - INFO - Chain [2] start processing
+06:21:59 - cmdstanpy - INFO - Chain [3] start processing
+06:21:59 - cmdstanpy - INFO - Chain [4] start processing
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>06:22:10 - cmdstanpy - INFO - Chain [4] done processing
+06:22:11 - cmdstanpy - INFO - Chain [2] done processing
+06:22:13 - cmdstanpy - INFO - Chain [1] done processing
+06:22:13 - cmdstanpy - INFO - Chain [3] done processing
+06:22:13 - cmdstanpy - WARNING - Some chains may have failed to converge.
+	Chain 1 had 40 divergent transitions (4.0%)
+	Chain 2 had 20 divergent transitions (2.0%)
+	Chain 3 had 29 divergent transitions (2.9%)
+	Chain 4 had 37 divergent transitions (3.7%)
+	Use the &quot;diagnose()&quot; method on the CmdStanMCMC object to see further information.
+</pre></div>
+</div>
+</div>
+</div>
+<p>We now compare all these models in order to only select one for posterior analysis.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">idata_linreg</span> <span class="o">=</span> <span class="n">az</span><span class="o">.</span><span class="n">from_cmdstanpy</span><span class="p">(</span>
+    <span class="n">posterior</span> <span class="o">=</span> <span class="n">fit_linreg</span><span class="p">,</span>
+    <span class="n">posterior_predictive</span><span class="o">=</span><span class="s2">&quot;y_hat&quot;</span><span class="p">,</span>
+    <span class="n">log_likelihood</span><span class="o">=</span><span class="s2">&quot;log_lik&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">idata_arx1</span> <span class="o">=</span> <span class="n">az</span><span class="o">.</span><span class="n">from_cmdstanpy</span><span class="p">(</span>
+    <span class="n">posterior</span> <span class="o">=</span> <span class="n">fit_arx1</span><span class="p">,</span>
+    <span class="n">posterior_predictive</span><span class="o">=</span><span class="s2">&quot;y_hat&quot;</span><span class="p">,</span>
+    <span class="n">log_likelihood</span><span class="o">=</span><span class="s2">&quot;log_lik&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">idata_arx2</span> <span class="o">=</span> <span class="n">az</span><span class="o">.</span><span class="n">from_cmdstanpy</span><span class="p">(</span>
+    <span class="n">posterior</span> <span class="o">=</span> <span class="n">fit_arx2</span><span class="p">,</span>
+    <span class="n">posterior_predictive</span><span class="o">=</span><span class="s2">&quot;y_hat&quot;</span><span class="p">,</span>
+    <span class="n">log_likelihood</span><span class="o">=</span><span class="s2">&quot;log_lik&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">idata_arx3</span> <span class="o">=</span> <span class="n">az</span><span class="o">.</span><span class="n">from_cmdstanpy</span><span class="p">(</span>
+    <span class="n">posterior</span> <span class="o">=</span> <span class="n">fit_arx3</span><span class="p">,</span>
+    <span class="n">posterior_predictive</span><span class="o">=</span><span class="s2">&quot;y_hat&quot;</span><span class="p">,</span>
+    <span class="n">log_likelihood</span><span class="o">=</span><span class="s2">&quot;log_lik&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">idata_armax</span> <span class="o">=</span> <span class="n">az</span><span class="o">.</span><span class="n">from_cmdstanpy</span><span class="p">(</span>
+    <span class="n">posterior</span> <span class="o">=</span> <span class="n">fit_armax</span><span class="p">,</span>
+    <span class="n">posterior_predictive</span><span class="o">=</span><span class="s2">&quot;y_hat&quot;</span><span class="p">,</span>
+    <span class="n">log_likelihood</span><span class="o">=</span><span class="s2">&quot;log_lik&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">df_comp_loo</span> <span class="o">=</span> <span class="n">az</span><span class="o">.</span><span class="n">compare</span><span class="p">({</span><span class="s2">&quot;linreg&quot;</span><span class="p">:</span> <span class="n">idata_linreg</span><span class="p">,</span> <span class="s2">&quot;arx1&quot;</span><span class="p">:</span> <span class="n">idata_arx1</span><span class="p">,</span> <span class="s2">&quot;arx2&quot;</span><span class="p">:</span> <span class="n">idata_arx2</span><span class="p">,</span> <span class="s2">&quot;arx3&quot;</span><span class="p">:</span> <span class="n">idata_arx3</span><span class="p">,</span> <span class="s2">&quot;arxmax&quot;</span><span class="p">:</span> <span class="n">idata_armax</span><span class="p">},</span> <span class="n">ic</span><span class="o">=</span><span class="s2">&quot;loo&quot;</span><span class="p">)</span>
+<span class="n">df_comp_loo</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>arviz - WARNING - Array contains NaN-value.
+/home/simon/anaconda3/envs/poem/lib/python3.13/site-packages/arviz/stats/stats.py:797: UserWarning: Estimated shape parameter of Pareto distribution is greater than 0.70 for one or more samples. You should consider using a more robust model, this is because importance sampling is less likely to work well if the marginal posterior and LOO posterior are very different. This is more likely to happen with a non-robust model and highly influential observations.
+  warnings.warn(
+/home/simon/anaconda3/envs/poem/lib/python3.13/site-packages/arviz/stats/stats.py:797: UserWarning: Estimated shape parameter of Pareto distribution is greater than 0.70 for one or more samples. You should consider using a more robust model, this is because importance sampling is less likely to work well if the marginal posterior and LOO posterior are very different. This is more likely to happen with a non-robust model and highly influential observations.
+  warnings.warn(
+/home/simon/anaconda3/envs/poem/lib/python3.13/site-packages/arviz/stats/stats.py:797: UserWarning: Estimated shape parameter of Pareto distribution is greater than 0.70 for one or more samples. You should consider using a more robust model, this is because importance sampling is less likely to work well if the marginal posterior and LOO posterior are very different. This is more likely to happen with a non-robust model and highly influential observations.
+  warnings.warn(
+/home/simon/anaconda3/envs/poem/lib/python3.13/site-packages/arviz/stats/stats.py:797: UserWarning: Estimated shape parameter of Pareto distribution is greater than 0.70 for one or more samples. You should consider using a more robust model, this is because importance sampling is less likely to work well if the marginal posterior and LOO posterior are very different. This is more likely to happen with a non-robust model and highly influential observations.
+  warnings.warn(
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>rank</th>
+      <th>elpd_loo</th>
+      <th>p_loo</th>
+      <th>elpd_diff</th>
+      <th>weight</th>
+      <th>se</th>
+      <th>dse</th>
+      <th>warning</th>
+      <th>scale</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>arx2</th>
+      <td>0</td>
+      <td>-103.396246</td>
+      <td>4.856709</td>
+      <td>0.000000</td>
+      <td>1.000000e+00</td>
+      <td>7.235023</td>
+      <td>0.000000</td>
+      <td>True</td>
+      <td>log</td>
+    </tr>
+    <tr>
+      <th>arx3</th>
+      <td>1</td>
+      <td>-104.615270</td>
+      <td>6.405578</td>
+      <td>1.219024</td>
+      <td>3.599302e-12</td>
+      <td>7.672517</td>
+      <td>1.520233</td>
+      <td>True</td>
+      <td>log</td>
+    </tr>
+    <tr>
+      <th>arx1</th>
+      <td>2</td>
+      <td>-107.561120</td>
+      <td>4.663292</td>
+      <td>4.164874</td>
+      <td>2.050683e-12</td>
+      <td>5.673898</td>
+      <td>4.558640</td>
+      <td>True</td>
+      <td>log</td>
+    </tr>
+    <tr>
+      <th>arxmax</th>
+      <td>3</td>
+      <td>-108.130806</td>
+      <td>5.292030</td>
+      <td>4.734560</td>
+      <td>5.088846e-13</td>
+      <td>5.821429</td>
+      <td>4.730052</td>
+      <td>True</td>
+      <td>log</td>
+    </tr>
+    <tr>
+      <th>linreg</th>
+      <td>4</td>
+      <td>-151.296510</td>
+      <td>2.012209</td>
+      <td>47.900264</td>
+      <td>0.000000e+00</td>
+      <td>1.916102</td>
+      <td>7.322429</td>
+      <td>False</td>
+      <td>log</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>It looks like the best model according to the LOO criterion is the second ARX model we defined, using <span class="math notranslate nohighlight">\(p=2\)</span> and <span class="math notranslate nohighlight">\(r=1\)</span>. The other ARX and ARMAX models come close, but all are a significany improvement from the linear regression in terms of elpd.</p>
+</section>
+<section id="posterior-analysis">
+<h2>Posterior analysis<a class="headerlink" href="#posterior-analysis" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fs</span> <span class="o">=</span> <span class="n">fit_arx2</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">percentiles</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">95</span><span class="p">))</span>
+<span class="n">fs</span><span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;phi[1]&#39;</span><span class="p">,</span> <span class="s1">&#39;phi[2]&#39;</span><span class="p">,</span> <span class="s1">&#39;beta[1,1]&#39;</span><span class="p">,</span> <span class="s1">&#39;beta[1,2]&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma&#39;</span><span class="p">]]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Mean</th>
+      <th>MCSE</th>
+      <th>StdDev</th>
+      <th>MAD</th>
+      <th>5%</th>
+      <th>50%</th>
+      <th>95%</th>
+      <th>ESS_bulk</th>
+      <th>ESS_tail</th>
+      <th>R_hat</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>alpha</th>
+      <td>-38.785400</td>
+      <td>1.155390</td>
+      <td>50.603400</td>
+      <td>48.393000</td>
+      <td>-121.478000</td>
+      <td>-38.993800</td>
+      <td>47.127700</td>
+      <td>1923.76</td>
+      <td>1776.38</td>
+      <td>1.00199</td>
+    </tr>
+    <tr>
+      <th>phi[1]</th>
+      <td>1.060290</td>
+      <td>0.008094</td>
+      <td>0.273956</td>
+      <td>0.259596</td>
+      <td>0.621424</td>
+      <td>1.055360</td>
+      <td>1.522520</td>
+      <td>1168.82</td>
+      <td>1226.96</td>
+      <td>1.00239</td>
+    </tr>
+    <tr>
+      <th>phi[2]</th>
+      <td>-0.214849</td>
+      <td>0.006826</td>
+      <td>0.235300</td>
+      <td>0.224055</td>
+      <td>-0.612585</td>
+      <td>-0.209717</td>
+      <td>0.158765</td>
+      <td>1213.09</td>
+      <td>1318.39</td>
+      <td>1.00252</td>
+    </tr>
+    <tr>
+      <th>beta[1,1]</th>
+      <td>5.004210</td>
+      <td>0.120778</td>
+      <td>4.197610</td>
+      <td>4.010650</td>
+      <td>-1.900230</td>
+      <td>4.966280</td>
+      <td>11.955700</td>
+      <td>1270.83</td>
+      <td>1554.13</td>
+      <td>1.00208</td>
+    </tr>
+    <tr>
+      <th>beta[1,2]</th>
+      <td>8.193960</td>
+      <td>0.205776</td>
+      <td>6.866260</td>
+      <td>6.412250</td>
+      <td>-3.228970</td>
+      <td>8.318390</td>
+      <td>19.202300</td>
+      <td>1142.12</td>
+      <td>1384.58</td>
+      <td>1.00306</td>
+    </tr>
+    <tr>
+      <th>sigma</th>
+      <td>30.057400</td>
+      <td>0.148224</td>
+      <td>5.751920</td>
+      <td>5.271160</td>
+      <td>22.308100</td>
+      <td>29.101100</td>
+      <td>40.549800</td>
+      <td>1559.94</td>
+      <td>1990.28</td>
+      <td>1.00150</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y_hat</span> <span class="o">=</span> <span class="n">idata_arx2</span><span class="o">.</span><span class="n">posterior_predictive</span><span class="p">[</span><span class="s2">&quot;y_hat&quot;</span><span class="p">]</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">]),</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;P&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">]),</span> <span class="n">y_hat</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="s2">&quot;chain&quot;</span><span class="p">,</span> <span class="s2">&quot;draw&quot;</span><span class="p">)),</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;C1&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;posterior mean&quot;</span><span class="p">)</span>
+<span class="n">az</span><span class="o">.</span><span class="n">plot_hdi</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">]),</span> <span class="n">y_hat</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;consumption&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7f6f8cfd4d70&gt;
+</pre></div>
+</div>
+<img alt="_images/d4b9d44e10668c653d7e913e4b9aac34656dd039c0708c6d413a9d55e7a612d6.png" src="_images/d4b9d44e10668c653d7e913e4b9aac34656dd039c0708c6d413a9d55e7a612d6.png" />
+</div>
+</div>
+<p>We can see the posterior high density intervals increase drastically after the end of the training period.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="timeseries_intro.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Time series models</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="autocorrelated.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Autocorrelated energy signature</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-regression">Linear regression</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#posterior-analysis">Posterior analysis</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Simon Rouchier
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
