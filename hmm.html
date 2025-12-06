@@ -535,11 +535,11 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\Phiniqs\AppData\Local\Temp\ipykernel_41432\660712787.py:14: FutureWarning: DataFrame.fillna with &#39;method&#39; is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\Phiniqs\AppData\Local\Temp\ipykernel_37448\660712787.py:14: FutureWarning: DataFrame.fillna with &#39;method&#39; is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
   df.fillna(method=&#39;ffill&#39;, inplace=True)
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&lt;matplotlib.lines.Line2D at 0x19c41484410&gt;]
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&lt;matplotlib.lines.Line2D at 0x206f5364410&gt;]
 </pre></div>
 </div>
 <img alt="_images/057055ab3b726a588264fe694ef2139b504a587a4714b51d1a27776fbe4863e5.png" src="_images/057055ab3b726a588264fe694ef2139b504a587a4714b51d1a27776fbe4863e5.png" />
@@ -614,9 +614,9 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\Phiniqs\AppData\Local\Temp\ipykernel_41432\3848433432.py:15: FutureWarning: Series.__getitem__ treating keys as positions is deprecated. In a future version, integer keys will always be treated as labels (consistent with DataFrame behavior). To access a value by position, use `ser.iloc[pos]`
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\Phiniqs\AppData\Local\Temp\ipykernel_37448\3848433432.py:15: FutureWarning: Series.__getitem__ treating keys as positions is deprecated. In a future version, integer keys will always be treated as labels (consistent with DataFrame behavior). To access a value by position, use `ser.iloc[pos]`
   logalpha[0] = np.log(pi0) + norm.logpdf(y[0], loc=mu, scale=sig)
-C:\Users\Phiniqs\AppData\Local\Temp\ipykernel_41432\3848433432.py:19: FutureWarning: Series.__getitem__ treating keys as positions is deprecated. In a future version, integer keys will always be treated as labels (consistent with DataFrame behavior). To access a value by position, use `ser.iloc[pos]`
+C:\Users\Phiniqs\AppData\Local\Temp\ipykernel_37448\3848433432.py:19: FutureWarning: Series.__getitem__ treating keys as positions is deprecated. In a future version, integer keys will always be treated as labels (consistent with DataFrame behavior). To access a value by position, use `ser.iloc[pos]`
   logalpha[t,j] = logsumexp(logalpha[t-1,:] + np.log(a[:,j]) + norm.logpdf(y[t],
 </pre></div>
 </div>
@@ -716,12 +716,23 @@ C:\Users\Phiniqs\AppData\Local\Temp\ipykernel_41432\3848433432.py:19: FutureWarn
 <span class="g g-Whitespace">     </span><span class="mi">21</span> <span class="c1"># Termination</span>
 <span class="g g-Whitespace">     </span><span class="mi">22</span> <span class="k">return</span> <span class="n">logsumexp</span><span class="p">(</span><span class="n">logalpha</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
-<span class="nn">File ~\AppData\Local\Programs\Python\Python313\Lib\site-packages\scipy\stats\_distn_infrastructure.py:2093,</span> in <span class="ni">rv_continuous.logpdf</span><span class="nt">(self, x, *args, **kwds)</span>
-<span class="g g-Whitespace">   </span><span class="mi">2091</span> <span class="n">output</span> <span class="o">=</span> <span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">cond</span><span class="p">),</span> <span class="n">dtyp</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">2092</span> <span class="n">output</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="o">-</span><span class="n">inf</span><span class="p">)</span>
-<span class="ne">-&gt; </span><span class="mi">2093</span> <span class="n">putmask</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">cond0</span><span class="p">)</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">badvalue</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">2094</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">cond</span><span class="p">):</span>
+<span class="nn">File ~\AppData\Local\Programs\Python\Python313\Lib\site-packages\scipy\stats\_distn_infrastructure.py:2097,</span> in <span class="ni">rv_continuous.logpdf</span><span class="nt">(self, x, *args, **kwds)</span>
 <span class="g g-Whitespace">   </span><span class="mi">2095</span>     <span class="n">goodargs</span> <span class="o">=</span> <span class="n">argsreduce</span><span class="p">(</span><span class="n">cond</span><span class="p">,</span> <span class="o">*</span><span class="p">((</span><span class="n">x</span><span class="p">,)</span><span class="o">+</span><span class="n">args</span><span class="o">+</span><span class="p">(</span><span class="n">scale</span><span class="p">,)))</span>
+<span class="g g-Whitespace">   </span><span class="mi">2096</span>     <span class="n">scale</span><span class="p">,</span> <span class="n">goodargs</span> <span class="o">=</span> <span class="n">goodargs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">goodargs</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="ne">-&gt; </span><span class="mi">2097</span>     <span class="n">place</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">cond</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logpdf</span><span class="p">(</span><span class="o">*</span><span class="n">goodargs</span><span class="p">)</span> <span class="o">-</span> <span class="n">log</span><span class="p">(</span><span class="n">scale</span><span class="p">))</span>
+<span class="g g-Whitespace">   </span><span class="mi">2098</span> <span class="k">if</span> <span class="n">output</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">2099</span>     <span class="k">return</span> <span class="n">output</span><span class="p">[()]</span>
+
+<span class="nn">File ~\AppData\Local\Programs\Python\Python313\Lib\site-packages\numpy\lib\_function_base_impl.py:2085,</span> in <span class="ni">place</span><span class="nt">(arr, mask, vals)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2047</span> <span class="nd">@array_function_dispatch</span><span class="p">(</span><span class="n">_place_dispatcher</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2048</span> <span class="k">def</span><span class="w"> </span><span class="nf">place</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">vals</span><span class="p">):</span>
+<span class="g g-Whitespace">   </span><span class="mi">2049</span><span class="w">     </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="g g-Whitespace">   </span><span class="mi">2050</span><span class="sd">     Change elements of an array based on conditional and input values.</span>
+<span class="g g-Whitespace">   </span><span class="mi">2051</span><span class="sd"> </span>
+<span class="sd">   (...)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2083</span><span class="sd"> </span>
+<span class="g g-Whitespace">   </span><span class="mi">2084</span><span class="sd">     &quot;&quot;&quot;</span>
+<span class="ne">-&gt; </span><span class="mi">2085</span>     <span class="k">return</span> <span class="n">_place</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">vals</span><span class="p">)</span>
 
 <span class="ne">KeyboardInterrupt</span>: 
 </pre></div>
